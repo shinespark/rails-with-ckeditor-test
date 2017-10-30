@@ -1,0 +1,34 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_file_format=Barracuda --innodb_file_per_table=1 --innodb_large_prefix --explicit_defaults_for_timestamp=1
+    environment:
+      - TZ=Asia/Tokyo
+      - MYSQL_DATABASE=app_development
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+  nginx:
+    build: ./nginx
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - '80:80'
+    depends_on:
+      - rails
+    volumes_from:
+      - rails
+  rails:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0' -e development
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./rails:/app
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db

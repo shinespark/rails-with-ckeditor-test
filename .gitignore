@@ -1,0 +1,8 @@
+*.dat
+*.log
+*.swp
+*~
+.DS_Store
+
+# Ignore MySQL DB, Redis
+data/mysql/*
